@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="shortcut icon" type="image/jpg" href="timer10.webp">
+	<title>Timer</title>
+	<style type="text/css">
+		body {
+			background-color: black;
+			color: white;
+			font-size: 120px;
+			text-align: center;
+			font-family: roboto;
+        			font-weight: lighter;
+		}
+	h1 {
+        background-color: black;
+        color: white;
+        font-size: 120px;
+        text-align: center;
+        font-family: roboto;
+        font-weight: lighter;
+        margin-top: 110px;
+        margin-bottom: -80px;
+    }
+	#start {
+	width: 100px;
+  	height: 40px;
+	color: black;
+	font-size: 20px;
+            text-align: center;
+            font-family: roboto;
+            font-weight: normal;
+	background-color: grey;
+}
+	#pause {
+	width: 100px;
+  	height: 40px;
+	color: black;
+	font-size: 20px;
+            text-align: center;
+            font-family: roboto;
+            font-weight: normal;
+	background-color: grey;
+}
+	#reset {
+	width: 100px;
+  	height: 40px;
+	color: black;
+	font-size: 20px;
+            text-align: center;
+            font-family: roboto;
+           font-weight: normal;
+           background-color: grey;
+}
+	
+	#timer {
+        color: rgb( 200, 200, 200 );
+        font-size: 130px;
+        text-align: center;
+        font-family: roboto;
+        font-weight: lighter;
+        margin-top: 0;
+
+{
+	</style>
+</head>
+<body>
+	<h1>Timer</h1>
+	<button id="start" onclick="startTimer()">Start</button>
+	<button id="pause" onclick="pauseTimer()">Pause</button>
+	<button id="reset" onclick="resetTimer()">Reset</button>
+	<div id="timer">00:00</div>
+	<audio id="alarm" src="ringtone.mp3"></audio>
+	<script type="text/javascript">
+		var countdownTimer;
+        		var timerRunning = false;
+        		var timeLeftInMillis;
+       		var pausedTimeInMillis;
+        		var alarm;
+
+		function startTimer() {
+			// get the number of minutes from the user
+			minutes = parseInt(prompt("Enter the number of minutes (up to 240):"));
+			if (isNaN(minutes) || minutes < 1 || minutes > 240) {
+				alert("Invalid input. Please enter a number between 1 and 240.");
+				return;
+			}
+
+			// set the initial time
+			seconds = 0;
+			updateTimer();
+
+			// start the timer
+			timer = setInterval(function() {
+				seconds--;
+				if (seconds < 0) {
+					minutes--;
+					if (minutes < 0) {
+						clearInterval(timer);
+						document.getElementById("alarm").play();
+						return;
+					}
+					seconds = 59;
+				}
+				updateTimer();
+			}, 1000);
+
+			// disable the start button
+			document.getElementById("start").disabled = true;
+			isPaused = false;
+		}
+
+		function pauseTimer() {
+			if (isPaused) {
+				// resume the timer
+				timer = setInterval(function() {
+					seconds--;
+					if (seconds < 0) {
+						minutes--;
+						if (minutes < 0) {
+							clearInterval(timer);
+							document.getElementById("alarm").play();
+							return;
+						}
+						seconds = 59;
+					}
+					updateTimer();
+				}, 1000);
+				document.getElementById("pause").innerHTML = "Pause";
+			} else {
+				// pause the timer
+				clearInterval(timer);
+				document.getElementById("pause").innerHTML = "Resume";
+			}
+			isPaused = !isPaused;
+		}
+
+		function resetTimer() {
+			// stop the timer
+			clearInterval(timer);
+			document.getElementById("alarm").pause();
+			document.getElementById("alarm").currentTime = 0;
+
+			// reset the timer
+			minutes = 0;
+			seconds = 0;
+			updateTimer();
+
+			// enable the start button
+			document.getElementById("start").disabled = false;
+			document.getElementById("pause").innerHTML = "Pause";
+			isPaused = false;
+		}
+
+		function updateTimer() {
+			var minStr = (minutes < 10 ? "0" : "") + minutes;
+			var secStr = (seconds < 10 ? "0" : "") + seconds;
+			document.getElementById("timer").innerHTML = minStr + ":" + secStr;
+		}
+	</script>
+</body>
+</html>
